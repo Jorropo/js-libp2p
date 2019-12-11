@@ -102,6 +102,8 @@ Some available peer discovery modules are:
 - [js-libp2p-kad-dht](https://github.com/libp2p/js-libp2p-kad-dht)
 - [js-libp2p-webrtc-star](https://github.com/libp2p/js-libp2p-webrtc-star)
 
+Take into consideration that `peer-discovery` services within transports (such as `js-libp2p-webrtc-star`) are automatically gathered from the `transport` and do not need to be added in the discovery modules. However, these transports can also be configured and disabled as the other ones.
+
 If none of the available peer discovery protocols fulfills your needs, you can create a libp2p compatible one. A libp2p peer discovery protocol just needs to be compliant with the [Peer Discovery Interface](https://github.com/libp2p/js-interfaces/tree/master/src/peer-discovery).
 
 If you want to know more about libp2p peer discovery, you should read the following content:
@@ -260,7 +262,35 @@ const node = await Libp2p.create({
 })
 ```
 
-**3) Customizing Pubsub**
+**3) Setup webrtc transport and discovery**
+```js
+
+const Libp2p = require('libp2p')
+const WS = require('libp2p-websockets')
+const WebRTCStar = require('libp2p-webrtc-star')
+const MPLEX = require('libp2p-mplex')
+const SECIO = require('libp2p-secio')
+
+const node = await Libp2p.create({
+  modules: {
+    transport: [
+      WS,
+      WebRTCStar
+    ],
+    streamMuxer: [MPLEX],
+    connEncryption: [SECIO],
+  },
+  config: {
+    peerDiscovery: {
+      webRTCStar: {
+        enabled: true
+      }
+    }
+  }
+})
+```
+
+**4) Customizing Pubsub**
 
 ```js
 const Libp2p = require('libp2p')
@@ -287,7 +317,7 @@ const node = await Libp2p.create({
 })
 ```
 
-**4) Customizing DHT**
+**5) Customizing DHT**
 
 ```js
 const Libp2p = require('libp2p')
@@ -317,7 +347,7 @@ const node = await Libp2p.create({
 })
 ```
 
-**5) Setup with Content and Peer Routing**
+**6) Setup with Content and Peer Routing**
 
 ```js
 const Libp2p = require('libp2p')
@@ -347,7 +377,7 @@ const node = await Libp2p.create({
 })
 ```
 
-**6) Setup with Relay**
+**7) Setup with Relay**
 
 ```js
 const Libp2p = require('libp2p')
